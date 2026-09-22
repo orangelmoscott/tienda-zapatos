@@ -6,8 +6,8 @@
 (function () {
   'use strict';
 
-  // Config & State
-  const WHATSAPP_PHONE = '573000000000'; // Default Store WhatsApp Number
+  // Config & State (Store WhatsApp number persistent)
+  let WHATSAPP_PHONE = localStorage.getItem('cg_wa_phone') || '573000000000';
   
   let state = {
     gender: 'all',
@@ -76,6 +76,16 @@
     renderProducts();
     updateBadges();
   }
+
+  // Set & Save WhatsApp Store Number
+  window.setStoreWhatsAppNumber = function(num) {
+    const cleanNum = num.replace(/[^\d]/g, '');
+    if (cleanNum) {
+      WHATSAPP_PHONE = cleanNum;
+      localStorage.setItem('cg_wa_phone', cleanNum);
+      showToast(`Número de WhatsApp actualizado a +${cleanNum}`);
+    }
+  };
 
   // ==========================================================================
   // THEME & BADGES
@@ -156,7 +166,7 @@
 
     // Size Filter
     if (state.size !== 'all') {
-      result = result.filter(p => p.sizes && p.sizes.includes(state.size));
+      result = result.filter(p => p.sizes && p.sizes.length > 0 && p.sizes.includes(state.size));
     }
 
     // Wishlist Only Filter
@@ -281,11 +291,33 @@
 
   function openModal(product) {
     state.selectedProduct = product;
-    state.selectedModalSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : null;
+    
+    // Check if product has sizes (Shoes/Boots) vs No size (Bags/Belts/Accs)
+    const hasSizes = Boolean(product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0);
+    state.selectedModalSize = hasSizes ? product.sizes[0] : 'Única';
 
-    const sizesButtons = product.sizes.map(sz => `
-      <button class="size-btn ${sz === state.selectedModalSize ? 'selected' : ''}" data-size="${sz}">${sz}</button>
-    `).join('');
+    let sizeSelectionHTML = '';
+    if (hasSizes) {
+      const sizesButtons = product.sizes.map(sz => `
+        <button class="size-btn ${sz === state.selectedModalSize ? 'selected' : ''}" data-size="${sz}">${sz}</button>
+      `).join('');
+      sizeSelectionHTML = `
+        <div class="size-selection-label">
+          <span>Selecciona tu Talla:</span>
+          <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">Disponibles</span>
+        </div>
+        <div class="size-grid" id="modalSizeGrid">
+          ${sizesButtons}
+        </div>
+      `;
+    } else {
+      sizeSelectionHTML = `
+        <div class="size-selection-label" style="margin-bottom:18px;">
+          <span>Talla / Dimensión:</span>
+          <span style="font-weight:700; color:var(--accent-primary);">Talla Única / Estándar</span>
+        </div>
+      `;
+    }
 
     el.modalContent.innerHTML = `
       <div class="modal-image-col">
@@ -305,13 +337,7 @@
 
         <div class="modal-blurb">"${product.blurb || 'Pieza 100% cuero genuino, con acabado y costura cuidados al detalle.'}"</div>
 
-        <div class="size-selection-label">
-          <span>Selecciona tu Talla:</span>
-          <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">Disponibles</span>
-        </div>
-        <div class="size-grid" id="modalSizeGrid">
-          ${sizesButtons}
-        </div>
+        ${sizeSelectionHTML}
 
         <div class="modal-actions">
           <button class="btn-add-cart" id="modalAddCartBtn">
@@ -331,32 +357,34 @@
       </div>
     `;
 
-    // Size Selection Logic
-    const sizeBtns = el.modalContent.querySelectorAll('#modalSizeGrid .size-btn');
-    sizeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        sizeBtns.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        state.selectedModalSize = btn.dataset.size;
+    // Size Selection Logic if applicable
+    if (hasSizes) {
+      const sizeBtns = el.modalContent.querySelectorAll('#modalSizeGrid .size-btn');
+      sizeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sizeBtns.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          state.selectedModalSize = btn.dataset.size;
+        });
       });
-    });
+    }
 
     // Modal Action Handlers
     el.modalContent.querySelector('#modalAddCartBtn').addEventListener('click', () => {
-      if (!state.selectedModalSize) {
+      if (hasSizes && !state.selectedModalSize) {
         showToast('Por favor selecciona una talla');
         return;
       }
-      addToCart(product, state.selectedModalSize);
+      addToCart(product, state.selectedModalSize || 'Única');
       closeModal();
     });
 
     el.modalContent.querySelector('#modalWaDirectBtn').addEventListener('click', () => {
-      if (!state.selectedModalSize) {
+      if (hasSizes && !state.selectedModalSize) {
         showToast('Por favor selecciona una talla');
         return;
       }
-      sendDirectWhatsAppProduct(product, state.selectedModalSize);
+      sendDirectWhatsAppProduct(product, state.selectedModalSize || 'Única');
     });
 
     el.productModal.classList.add('open');
@@ -373,20 +401,21 @@
   // ==========================================================================
 
   function addToCart(product, size) {
-    const existingIndex = state.cart.findIndex(item => item.id === product.id && item.size === size);
+    const finalSize = size || 'Única';
+    const existingIndex = state.cart.findIndex(item => item.id === product.id && item.size === finalSize);
 
     if (existingIndex > -1) {
       state.cart[existingIndex].qty += 1;
     } else {
       state.cart.push({
         id: product.id,
-        size: size,
+        size: finalSize,
         qty: 1
       });
     }
 
     updateBadges();
-    showToast(`Añadido "${product.name}" (Talla ${size}) al carrito`);
+    showToast(`Añadido "${product.name}" ${finalSize !== 'Única' ? `(Talla ${finalSize})` : ''} al carrito`);
   }
 
   function updateCartQty(index, delta) {
@@ -439,6 +468,8 @@
       const subtotal = product.price * cartItem.qty;
       total += subtotal;
 
+      const sizeLabel = cartItem.size && cartItem.size !== 'Única' ? `Talla: ${cartItem.size} • ` : '';
+
       const itemEl = document.createElement('div');
       itemEl.className = 'cart-item';
       itemEl.innerHTML = `
@@ -446,7 +477,7 @@
         
         <div class="cart-item-info">
           <div class="cart-item-name">${product.name}</div>
-          <div class="cart-item-meta">Talla: ${cartItem.size} • Piel ${product.color}</div>
+          <div class="cart-item-meta">${sizeLabel}Piel ${product.color}</div>
           <div class="cart-item-price">$${product.price.toFixed(2)}</div>
           
           <div class="cart-item-controls">
@@ -485,6 +516,9 @@
   // ==========================================================================
 
   function sendDirectWhatsAppProduct(product, size) {
+    const cleanPhone = WHATSAPP_PHONE.replace(/[^\d]/g, '');
+    const sizeStr = size && size !== 'Única' ? `\n📏 *Talla:* ${size}` : '';
+
     const text = 
 `🛒 *Nuevo Pedido - Cuero Genuino*
 
@@ -492,19 +526,19 @@ Hola! Me interesa comprar el siguiente producto:
 
 📌 *Producto:* ${product.name}
 👞 *Categoría:* ${product.cat} (${product.gender === 'caballero' ? 'Caballero' : 'Dama'})
-🎨 *Color/Piel:* ${product.color} (${product.material})
-📏 *Talla:* ${size}
+🎨 *Color/Piel:* ${product.color} (${product.material})${sizeStr}
 💰 *Precio:* $${product.price.toFixed(2)}
 
 Quedo atento a las instrucciones de pago y envío. Gracias!`;
 
-    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
+    const url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   }
 
   function sendCartWhatsAppOrder() {
     if (state.cart.length === 0) return;
 
+    const cleanPhone = WHATSAPP_PHONE.replace(/[^\d]/g, '');
     const customerName = el.customerNameInput.value.trim();
     let total = 0;
     let itemsText = '';
@@ -516,7 +550,9 @@ Quedo atento a las instrucciones de pago y envío. Gracias!`;
       const subtotal = p.price * cartItem.qty;
       total += subtotal;
 
-      itemsText += `${idx + 1}. *${p.name}* (Talla ${cartItem.size}) x${cartItem.qty} - $${subtotal.toFixed(2)}\n   Piel: ${p.color} (${p.material})\n`;
+      const sizeStr = cartItem.size && cartItem.size !== 'Única' ? ` (Talla ${cartItem.size})` : '';
+
+      itemsText += `${idx + 1}. *${p.name}*${sizeStr} x${cartItem.qty} - $${subtotal.toFixed(2)}\n   Piel: ${p.color} (${p.material})\n`;
     });
 
     const text = 
@@ -528,7 +564,7 @@ ${itemsText}
 
 Hola! Quisiera confirmar la disponibilidad y coordinar el pago/envío de mi pedido. Gracias!`;
 
-    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
+    const url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   }
 
