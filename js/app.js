@@ -107,10 +107,13 @@
     }
   };
 
-  // Vercel Analytics Track Helper
+  // Vercel & Google Analytics GA4 Track Helper
   function trackEvent(eventName, data) {
     if (typeof window.va === 'function') {
       window.va('event', { name: eventName, ...data });
+    }
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, data);
     }
   }
 
