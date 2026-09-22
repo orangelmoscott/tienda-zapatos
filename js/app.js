@@ -289,7 +289,7 @@
           <span class="card-color">Piel ${p.color} (${p.material})</span>
 
           <div class="card-footer">
-            <span class="card-price">$${p.price.toFixed(2)}</span>
+            <span class="card-price">${p.price.toFixed(2)} €</span>
             <button class="card-view-btn" data-id="${p.id}">Ver Detalle</button>
           </div>
         </div>
@@ -358,7 +358,7 @@
       <div class="modal-details-col">
         <span class="modal-cat-tag">${product.cat} • Piel 100% Genuina</span>
         <h2 class="modal-title">${product.name}</h2>
-        <div class="modal-price">$${product.price.toFixed(2)}</div>
+        <div class="modal-price">${product.price.toFixed(2)} €</div>
 
         <div class="modal-meta-list">
           <div><b>Color:</b> ${product.color}</div>
@@ -482,7 +482,7 @@
           <p>Tu carrito está vacío</p>
         </div>
       `;
-      el.cartTotalAmount.textContent = '$0.00';
+      el.cartTotalAmount.textContent = '0.00 €';
       el.sendWhatsAppCartBtn.style.opacity = '0.5';
       el.sendWhatsAppCartBtn.style.pointerEvents = 'none';
       return;
@@ -510,7 +510,7 @@
         <div class="cart-item-info">
           <div class="cart-item-name">${product.name}</div>
           <div class="cart-item-meta">${sizeLabel}Piel ${product.color}</div>
-          <div class="cart-item-price">$${product.price.toFixed(2)}</div>
+          <div class="cart-item-price">${product.price.toFixed(2)} €</div>
           
           <div class="cart-item-controls">
             <button class="qty-btn" data-action="minus" data-idx="${idx}">-</button>
@@ -529,7 +529,7 @@
       el.cartBody.appendChild(itemEl);
     });
 
-    el.cartTotalAmount.textContent = `$${total.toFixed(2)}`;
+    el.cartTotalAmount.textContent = `${total.toFixed(2)} €`;
   }
 
   function openCartDrawer() {
@@ -561,7 +561,7 @@ Hola! Me interesa comprar el siguiente producto:
 📌 *Producto:* ${product.name} (ID #${product.id})
 👞 *Categoría:* ${product.cat} (${product.gender === 'caballero' ? 'Caballero' : 'Dama'})
 🎨 *Color/Piel:* ${product.color} (${product.material})${sizeStr}
-💰 *Precio:* $${product.price.toFixed(2)}
+💰 *Precio:* ${product.price.toFixed(2)} €
 
 🔗 *Ver Producto Exacto:*
 ${prodURL}
@@ -591,7 +591,7 @@ Quedo atento a las instrucciones de pago y envío. Gracias!`;
       const sizeStr = cartItem.size && cartItem.size !== 'Única' ? ` (Talla ${cartItem.size})` : '';
       const prodURL = getProductURL(p.id);
 
-      itemsText += `${idx + 1}. *${p.name}*${sizeStr} x${cartItem.qty} - $${subtotal.toFixed(2)}\n   Piel: ${p.color} (${p.material})\n   🔗 Link: ${prodURL}\n\n`;
+      itemsText += `${idx + 1}. *${p.name}*${sizeStr} x${cartItem.qty} - ${subtotal.toFixed(2)} €\n   Piel: ${p.color} (${p.material})\n   🔗 Link: ${prodURL}\n\n`;
     });
 
     const text = 
@@ -599,7 +599,7 @@ Quedo atento a las instrucciones de pago y envío. Gracias!`;
 ${customerName ? `👤 *Cliente:* ${customerName}\n` : ''}
 Detalle del pedido:
 
-${itemsText}💰 *TOTAL: $${total.toFixed(2)}*
+${itemsText}💰 *TOTAL: ${total.toFixed(2)} €*
 
 Hola! Quisiera confirmar la disponibilidad y coordinar el pago/envío de mi pedido. Gracias!`;
 
