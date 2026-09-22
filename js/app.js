@@ -107,6 +107,13 @@
     }
   };
 
+  // Vercel Analytics Track Helper
+  function trackEvent(eventName, data) {
+    if (typeof window.va === 'function') {
+      window.va('event', { name: eventName, ...data });
+    }
+  }
+
   // ==========================================================================
   // THEME & BADGES
   // ==========================================================================
@@ -311,6 +318,7 @@
 
   function openModal(product) {
     state.selectedProduct = product;
+    trackEvent('view_product', { product_id: product.id, name: product.name, cat: product.cat, price: product.price });
     
     // Check if product has sizes (Shoes/Boots) vs No size (Bags/Belts/Accs)
     const hasSizes = Boolean(product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0);
@@ -422,6 +430,7 @@
 
   function addToCart(product, size) {
     const finalSize = size || 'Única';
+    trackEvent('add_to_cart', { product_id: product.id, name: product.name, size: finalSize, price: product.price });
     const existingIndex = state.cart.findIndex(item => item.id === product.id && item.size === finalSize);
 
     if (existingIndex > -1) {
@@ -536,6 +545,7 @@
   // ==========================================================================
 
   function sendDirectWhatsAppProduct(product, size) {
+    trackEvent('whatsapp_order_direct', { product_id: product.id, name: product.name, size: size, price: product.price });
     const cleanPhone = WHATSAPP_PHONE.replace(/[^\d]/g, '');
     const sizeStr = size && size !== 'Única' ? `\n📏 *Talla:* ${size}` : '';
     const prodURL = getProductURL(product.id);
@@ -561,6 +571,7 @@ Quedo atento a las instrucciones de pago y envío. Gracias!`;
 
   function sendCartWhatsAppOrder() {
     if (state.cart.length === 0) return;
+    trackEvent('whatsapp_order_cart', { items_count: state.cart.length });
 
     const cleanPhone = WHATSAPP_PHONE.replace(/[^\d]/g, '');
     const customerName = el.customerNameInput.value.trim();
