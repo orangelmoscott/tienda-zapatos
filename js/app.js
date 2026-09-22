@@ -75,6 +75,26 @@
     renderCategoryPills();
     renderProducts();
     updateBadges();
+    checkURLProductDeepLink();
+  }
+
+  function getProductURL(id) {
+    const origin = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.includes('localhost')) 
+      ? window.location.origin 
+      : 'https://tienda-zapatos-orangelmoscotts-projects.vercel.app';
+    const path = window.location.pathname || '/';
+    return `${origin}${path}?p=${id}`;
+  }
+
+  function checkURLProductDeepLink() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('p')) {
+      const pid = parseInt(urlParams.get('p'), 10);
+      const targetProd = PRODUCTS.find(p => p.id === pid);
+      if (targetProd) {
+        setTimeout(() => openModal(targetProd), 200);
+      }
+    }
   }
 
   // Set & Save WhatsApp Store Number
@@ -518,16 +538,20 @@
   function sendDirectWhatsAppProduct(product, size) {
     const cleanPhone = WHATSAPP_PHONE.replace(/[^\d]/g, '');
     const sizeStr = size && size !== 'Única' ? `\n📏 *Talla:* ${size}` : '';
+    const prodURL = getProductURL(product.id);
 
     const text = 
 `🛒 *Nuevo Pedido - Cuero Genuino*
 
 Hola! Me interesa comprar el siguiente producto:
 
-📌 *Producto:* ${product.name}
+📌 *Producto:* ${product.name} (ID #${product.id})
 👞 *Categoría:* ${product.cat} (${product.gender === 'caballero' ? 'Caballero' : 'Dama'})
 🎨 *Color/Piel:* ${product.color} (${product.material})${sizeStr}
 💰 *Precio:* $${product.price.toFixed(2)}
+
+🔗 *Ver Producto Exacto:*
+${prodURL}
 
 Quedo atento a las instrucciones de pago y envío. Gracias!`;
 
@@ -551,16 +575,17 @@ Quedo atento a las instrucciones de pago y envío. Gracias!`;
       total += subtotal;
 
       const sizeStr = cartItem.size && cartItem.size !== 'Única' ? ` (Talla ${cartItem.size})` : '';
+      const prodURL = getProductURL(p.id);
 
-      itemsText += `${idx + 1}. *${p.name}*${sizeStr} x${cartItem.qty} - $${subtotal.toFixed(2)}\n   Piel: ${p.color} (${p.material})\n`;
+      itemsText += `${idx + 1}. *${p.name}*${sizeStr} x${cartItem.qty} - $${subtotal.toFixed(2)}\n   Piel: ${p.color} (${p.material})\n   🔗 Link: ${prodURL}\n\n`;
     });
 
     const text = 
 `🛒 *Pedido de Carrito - Cuero Genuino*
 ${customerName ? `👤 *Cliente:* ${customerName}\n` : ''}
 Detalle del pedido:
-${itemsText}
-💰 *TOTAL: $${total.toFixed(2)}*
+
+${itemsText}💰 *TOTAL: $${total.toFixed(2)}*
 
 Hola! Quisiera confirmar la disponibilidad y coordinar el pago/envío de mi pedido. Gracias!`;
 
