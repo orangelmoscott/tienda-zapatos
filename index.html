@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Colección Cuero Genuino — Calzado & Artículos de Cuero</title>
+  <meta name="description" content="Catálogo exclusivo de calzado y artículos de cuero 100% genuino para caballero y dama. Diseños artesanales, botines, mocasines y más con pedido directo por WhatsApp.">
+  
+  <!-- Favicon & Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    ✨ 100% Piel Genuina Artesanal | Envíos a todo el país | Pedidos por WhatsApp ✨
+  </div>
+
+  <!-- Main Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="brand-logo" id="logoBtn">
+        <div class="logo-icon">CG</div>
+        <div class="brand-text">
+          <h1>Cuero Genuino</h1>
+          <span>Colección Artesanal</span>
+        </div>
+      </a>
+
+      <!-- Header Action Buttons -->
+      <div class="header-actions">
+        
+        <!-- Theme Toggle -->
+        <button class="action-btn" id="themeToggleBtn" title="Cambiar tema">
+          <svg id="themeMoonIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <svg id="themeSunIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+
+        <!-- Wishlist Button -->
+        <button class="action-btn" id="wishlistBtn" title="Mis Favoritos">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
+        </button>
+
+        <!-- Cart Drawer Button -->
+        <button class="action-btn" id="cartBtn" title="Ver Carrito">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" />
+          </svg>
+          <span class="badge-count" id="cartBadge">0</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Navigation & Filters Bar -->
+  <nav class="filter-nav-sticky">
+    <div class="nav-inner">
+      
+      <!-- Gender Collection Tabs -->
+      <div class="gender-tabs">
+        <button class="gender-tab active" data-gender="all">Todos (426)</button>
+        <button class="gender-tab" data-gender="caballero">👨 Caballero (142)</button>
+        <button class="gender-tab" data-gender="dama">👩 Dama (284)</button>
+      </div>
+
+      <!-- Controls: Search, Size, Sort -->
+      <div class="controls-bar">
+        
+        <!-- Live Search -->
+        <div class="search-box">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar por modelo, color o piel (ej. Crazy, Mocasín)...">
+        </div>
+
+        <div class="filter-controls">
+          <!-- Size Filter -->
+          <select id="sizeSelect" class="filter-select">
+            <option value="all">Todas las Tallas</option>
+            <option value="35">Talla 35</option>
+            <option value="36">Talla 36</option>
+            <option value="37">Talla 37</option>
+            <option value="38">Talla 38</option>
+            <option value="39">Talla 39</option>
+            <option value="40">Talla 40</option>
+            <option value="41">Talla 41</option>
+            <option value="42">Talla 42</option>
+            <option value="43">Talla 43</option>
+            <option value="44">Talla 44</option>
+            <option value="45">Talla 45</option>
+          </select>
+
+          <!-- Sort Filter -->
+          <select id="sortSelect" class="filter-select">
+            <option value="default">Ordenar por: Defecto</option>
+            <option value="price-low">Precio: Menor a Mayor</option>
+            <option value="price-high">Precio: Mayor a Menor</option>
+            <option value="name">Nombre (A - Z)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Categories Pills Scroll -->
+      <div class="category-pills" id="categoryPillsContainer">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Main Content & Product Catalog -->
+  <main class="main-container">
+    
+    <div class="section-header">
+      <h2 class="section-title" id="sectionTitle">Todos los Productos</h2>
+      <span class="results-count" id="resultsCount">Cargando catálogo...</span>
+    </div>
+
+    <!-- Product Cards Grid -->
+    <div class="product-grid" id="productGrid">
+      <!-- Dynamic product cards will be inserted here -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <h3>No encontramos productos</h3>
+      <p>Intenta cambiando los filtros de búsqueda, talla o categoría.</p>
+    </div>
+
+  </main>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="modalCloseBtn" title="Cerrar">✕</button>
+      
+      <div class="modal-layout" id="modalContent">
+        <!-- Rendered dynamically by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Drawer -->
+  <div class="drawer-backdrop" id="cartDrawerBackdrop">
+    <div class="cart-drawer" id="cartDrawer">
+      
+      <div class="drawer-header">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" />
+          </svg>
+          Mi Carrito
+        </h3>
+        <button class="modal-close-btn" id="cartCloseBtn">✕</button>
+      </div>
+
+      <div class="drawer-body" id="cartBody">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <div class="drawer-footer" id="cartFooter">
+        <div class="cart-summary-total">
+          <span>Total:</span>
+          <span id="cartTotalAmount">$0.00</span>
+        </div>
+
+        <input type="text" id="customerNameInput" class="customer-name-input" placeholder="Tu Nombre (Opcional para el pedido)">
+
+        <button class="btn-wa-direct" id="sendWhatsAppCartBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          Confirmar Pedido por WhatsApp
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      
+      <div class="footer-col">
+        <h4>Cuero Genuino</h4>
+        <p>Calzado y marroquinería 100% piel auténtica. Cuidado artesanal en cada costura y detalle.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Garantía de Calidad</h4>
+        <p>Materiales seleccionados de primera: Plenaflor, Nobuck, Crazy y Nobuck engrasado para máxima durabilidad.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Atención & Pedidos</h4>
+        <p>Escríbenos directamente por WhatsApp para consultas sobre tallas, envíos y disponibilidad inmediata.</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 Cuero Genuino — Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
