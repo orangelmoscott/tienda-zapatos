@@ -6,8 +6,8 @@
 (function () {
   'use strict';
 
-  // Config & State (Store WhatsApp number persistent)
-  let WHATSAPP_PHONE = localStorage.getItem('cg_wa_phone') || '573000000000';
+  // Config & State (Store WhatsApp number default: +34666771962)
+  let WHATSAPP_PHONE = localStorage.getItem('cg_wa_phone') || '34666771962';
   
   let state = {
     gender: 'all',
